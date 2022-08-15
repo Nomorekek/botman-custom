@@ -32,7 +32,9 @@ class RedisCache implements CacheInterface
     //public function __construct($host = 'ec2-176-34-192-39.eu-west-1.compute.amazonaws.com', $port = 15559, $auth = "pafa1107ac3504adf0152a08614b1cfd967f3774974db951dec56ae6635abfe14")
     public function __construct($host = 'snf-12143.ok-kno.grnetcloud.net', $port = 6379, $auth = "ii70mseq")
     {
-           error_log("arxizei i sindesi me to REDIS");
+           error_log("arxizei i sindesi me to REDIS -> ".$host);
+        error_log("arxizei i sindesi me to REDIS -> ".$port);
+        error_log("arxizei i sindesi me to REDIS -> ".$auth);
         if (! class_exists('Redis')) {
             throw new RuntimeException('phpredis extension is required for RedisCache');
         }
