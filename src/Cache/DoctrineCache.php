@@ -2,8 +2,8 @@
 
 namespace BotMan\BotMan\Cache;
 
-use BotMan\BotMan\Interfaces\CacheInterface;
 use Doctrine\Common\Cache\Cache;
+use BotMan\BotMan\Interfaces\CacheInterface;
 
 class DoctrineCache implements CacheInterface
 {

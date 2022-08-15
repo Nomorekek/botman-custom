@@ -2,11 +2,11 @@
 
 namespace BotMan\BotMan\Drivers\Tests;
 
-use BotMan\BotMan\Drivers\NullDriver;
 use BotMan\BotMan\Http\Curl;
+use BotMan\BotMan\Drivers\NullDriver;
 use BotMan\BotMan\Interfaces\DriverInterface;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use Symfony\Component\HttpFoundation\Request;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 
 /**
  * A driver that acts as a proxy for a global driver instance. Useful for mock/fake drivers in integration tests.
@@ -98,18 +98,6 @@ final class ProxyDriver implements DriverInterface
     public function types(IncomingMessage $matchingMessage)
     {
         return self::instance()->types($matchingMessage);
-    }
-
-    /**
-     * Send a typing indicator and wait for the given amount of seconds.
-     * @param IncomingMessage $matchingMessage
-     * @param int $seconds
-     * @param float $seconds
-     * @return mixed
-     */
-    public function typesAndWaits(IncomingMessage $matchingMessage, float $seconds)
-    {
-        $this->types($matchingMessage);
     }
 
     /**

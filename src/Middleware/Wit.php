@@ -4,10 +4,10 @@ namespace BotMan\BotMan\Middleware;
 
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Http\Curl;
+use Illuminate\Support\Collection;
 use BotMan\BotMan\Interfaces\HttpInterface;
 use BotMan\BotMan\Interfaces\MiddlewareInterface;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use Illuminate\Support\Collection;
 
 class Wit implements MiddlewareInterface
 {
@@ -51,7 +51,7 @@ class Wit implements MiddlewareInterface
     {
         $endpoint = 'https://api.wit.ai/message?q='.urlencode($message->getText());
 
-        $this->response = $this->http->get($endpoint, [], [
+        $this->response = $this->http->post($endpoint, [], [], [
             'Authorization: Bearer '.$this->token,
         ]);
 
@@ -87,7 +87,6 @@ class Wit implements MiddlewareInterface
 
         $responseData = Collection::make(json_decode($response->getContent(), true));
         $message->addExtras('entities', $responseData->get('entities'));
-        $message->addExtras('intents', $responseData->get('intents'));
 
         return $next($message);
     }
@@ -100,12 +99,16 @@ class Wit implements MiddlewareInterface
      */
     public function matching(IncomingMessage $message, $pattern, $regexMatched)
     {
-        $intents = Collection::make($message->getExtras())->get('intents', []);
+        $entities = Collection::make($message->getExtras())->get('entities', []);
 
-        if (!empty($intents)) {
-            foreach ($intents as $intent) {
-                if (($intent['name'] === $pattern || $intent['id'] === $pattern) && $intent['confidence'] >= $this->minimumConfidence) {
-                    return true;
+        if (! empty($entities)) {
+            foreach ($entities as $name => $entity) {
+                if ($name === 'intent') {
+                    foreach ($entity as $item) {
+                        if ($item['value'] === $pattern && $item['confidence'] >= $this->minimumConfidence) {
+                            return true;
+                        }
+                    }
                 }
             }
         }

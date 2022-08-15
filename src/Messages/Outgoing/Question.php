@@ -2,10 +2,10 @@
 
 namespace BotMan\BotMan\Messages\Outgoing;
 
-use BotMan\BotMan\Interfaces\QuestionActionInterface;
+use JsonSerializable;
 use BotMan\BotMan\Interfaces\WebAccess;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use JsonSerializable;
+use BotMan\BotMan\Interfaces\QuestionActionInterface;
 
 class Question implements JsonSerializable, WebAccess
 {
@@ -113,7 +113,6 @@ class Question implements JsonSerializable, WebAccess
     /**
      * @return array
      */
-    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->toArray();

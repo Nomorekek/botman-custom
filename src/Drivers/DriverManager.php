@@ -3,10 +3,10 @@
 namespace BotMan\BotMan\Drivers;
 
 use BotMan\BotMan\Http\Curl;
-use BotMan\BotMan\Interfaces\DriverInterface;
-use BotMan\BotMan\Interfaces\HttpInterface;
-use BotMan\BotMan\Interfaces\VerifiesService;
 use Illuminate\Support\Collection;
+use BotMan\BotMan\Interfaces\HttpInterface;
+use BotMan\BotMan\Interfaces\DriverInterface;
+use BotMan\BotMan\Interfaces\VerifiesService;
 use Symfony\Component\HttpFoundation\Request;
 
 class DriverManager
@@ -80,13 +80,13 @@ class DriverManager
         }
         foreach (self::getAvailableDrivers() as $driver) {
             /** @var HttpDriver $driver */
-            $driver = new $driver($request, $config, new Curl($config['curl_options'] ?? []));
+            $driver = new $driver($request, $config, new Curl());
             if ($driver->getName() === $name) {
                 return $driver;
             }
         }
 
-        return new NullDriver($request, [], new Curl($config['curl_options'] ?? []));
+        return new NullDriver($request, [], new Curl());
     }
 
     /**
@@ -98,7 +98,7 @@ class DriverManager
         $drivers = [];
 
         foreach (self::getAvailableHttpDrivers() as $driver) {
-            $driver = new $driver(Request::createFromGlobals(), $config, new Curl($config['curl_options'] ?? []));
+            $driver = new $driver(Request::createFromGlobals(), $config, new Curl());
             if ($driver->isConfigured()) {
                 $drivers[] = $driver;
             }
@@ -153,8 +153,8 @@ class DriverManager
     {
         $request = (isset($request)) ? $request : Request::createFromGlobals();
         foreach (self::getAvailableHttpDrivers() as $driver) {
-            $driver = new $driver($request, $config, new Curl($config['curl_options'] ?? []));
-            if ($driver instanceof VerifiesService && !is_null($driver->verifyRequest($request))) {
+            $driver = new $driver($request, $config, new Curl());
+            if ($driver instanceof VerifiesService && ! is_null($driver->verifyRequest($request))) {
                 return true;
             }
         }

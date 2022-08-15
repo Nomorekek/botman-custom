@@ -2,29 +2,22 @@
 
 namespace BotMan\BotMan\Commands;
 
+use Illuminate\Support\Collection;
+use BotMan\BotMan\Messages\Matcher;
+use BotMan\BotMan\Messages\Incoming\Answer;
+use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Interfaces\DriverInterface;
 use BotMan\BotMan\Messages\Attachments\Audio;
-use BotMan\BotMan\Messages\Attachments\Contact;
-use BotMan\BotMan\Messages\Attachments\File;
 use BotMan\BotMan\Messages\Attachments\Image;
-use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Attachments\Video;
-use BotMan\BotMan\Messages\Incoming\Answer;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use BotMan\BotMan\Messages\Matcher;
-use BotMan\BotMan\Messages\Matching\MatchingMessage;
+use BotMan\BotMan\Messages\Attachments\Contact;
 use BotMan\BotMan\Middleware\MiddlewareManager;
-use Illuminate\Support\Collection;
+use BotMan\BotMan\Messages\Attachments\Location;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
+use BotMan\BotMan\Messages\Matching\MatchingMessage;
 
 class ConversationManager
 {
-    protected $matcher;
-
-    public function __construct(?Matcher $matcher = null)
-    {
-        $this->matcher = $matcher ?? new Matcher();
-    }
-
     /**
      * Messages to listen to.
      * @var Command[]
@@ -73,8 +66,9 @@ class ConversationManager
      * @param bool $withReceivedMiddleware
      * @return array|MatchingMessage[]
      */
-    public function getMatchingMessages($messages, MiddlewareManager $middleware, Answer $answer, DriverInterface $driver, $withReceivedMiddleware = true): array
+    public function getMatchingMessages($messages, MiddlewareManager $middleware, Answer $answer, DriverInterface $driver, $withReceivedMiddleware = true) : array
     {
+        $matcher = new Matcher();
         $messages = Collection::make($messages)->reject(function (IncomingMessage $message) {
             return $message->isFromBot();
         });
@@ -86,8 +80,8 @@ class ConversationManager
             }
 
             foreach ($this->listenTo as $command) {
-                if ($this->matcher->isMessageMatching($message, $answer, $command, $driver, $middleware->matching())) {
-                    $matchingMessages[] = new MatchingMessage($command, $message, $this->matcher->getMatches());
+                if ($matcher->isMessageMatching($message, $answer, $command, $driver, $middleware->matching())) {
+                    $matchingMessages[] = new MatchingMessage($command, $message, $matcher->getMatches());
                 }
             }
         }

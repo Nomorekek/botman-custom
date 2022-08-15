@@ -2,8 +2,8 @@
 
 namespace BotMan\BotMan\Storages;
 
-use BotMan\BotMan\Interfaces\StorageInterface;
 use Illuminate\Support\Collection;
+use BotMan\BotMan\Interfaces\StorageInterface;
 
 class Storage implements StorageInterface
 {

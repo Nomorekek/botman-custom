@@ -2,9 +2,9 @@
 
 namespace BotMan\BotMan\Messages\Incoming;
 
+use Illuminate\Support\Collection;
 use BotMan\BotMan\Messages\Attachments\Contact;
 use BotMan\BotMan\Messages\Attachments\Location;
-use Illuminate\Support\Collection;
 
 class IncomingMessage
 {
@@ -16,9 +16,6 @@ class IncomingMessage
 
     /** @var string */
     protected $recipient;
-
-    /** @var string */
-    protected $bot_id;
 
     /** @var array */
     protected $images = [];
@@ -47,13 +44,14 @@ class IncomingMessage
     /** @var bool */
     protected $isFromBot = false;
 
-    public function __construct($message, $sender, $recipient, $payload = null, $bot_id = '')
+    protected $iid;
+
+    public function __construct($message, $sender, $recipient, $payload = null)
     {
         $this->message = $message;
         $this->sender = $sender;
         $this->recipient = $recipient;
         $this->payload = $payload;
-        $this->bot_id = $bot_id;
     }
 
     /**
@@ -88,12 +86,17 @@ class IncomingMessage
         return $this->message;
     }
 
+    public function getIID(){
+	return $this->iid;
+    }
+
+
     /**
      * @return string
      */
     public function getConversationIdentifier()
     {
-        return 'conversation-'.$this->bot_id.sha1($this->getSender()).'-'.sha1($this->getRecipient());
+        return 'conversation-'.sha1($this->getSender()).'-'.sha1($this->getRecipient());
     }
 
     /**
@@ -103,7 +106,7 @@ class IncomingMessage
      */
     public function getOriginatedConversationIdentifier()
     {
-        return 'conversation-'.$this->bot_id.sha1($this->getSender()).'-'.sha1('');
+        return 'conversation-'.sha1($this->getSender()).'-'.sha1('');
     }
 
     /**
@@ -120,7 +123,7 @@ class IncomingMessage
 
     /**
      * @param string|null $key
-     * @return mixed
+     * @return array
      */
     public function getExtras($key = null)
     {
@@ -209,7 +212,7 @@ class IncomingMessage
     /**
      * @return \BotMan\BotMan\Messages\Attachments\Location
      */
-    public function getLocation(): Location
+    public function getLocation() : Location
     {
         if (empty($this->location)) {
             throw new \UnexpectedValueException('This message does not contain a location');
@@ -221,7 +224,7 @@ class IncomingMessage
     /**
      * @return \BotMan\BotMan\Messages\Attachments\Contact
      */
-    public function getContact(): Contact
+    public function getContact() : Contact
     {
         if (empty($this->contact)) {
             throw new \UnexpectedValueException('This message does not contain a contact');
@@ -261,4 +264,10 @@ class IncomingMessage
     {
         $this->message = $message;
     }
+
+    public function setIID(string $iid){
+	$this->iid = $iid;	
+    }
+
+
 }

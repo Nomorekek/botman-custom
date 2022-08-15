@@ -2,15 +2,15 @@
 
 namespace BotMan\BotMan\Drivers\Tests;
 
-use BotMan\BotMan\Drivers\Events\GenericEvent;
+use BotMan\BotMan\Users\User;
+use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Interfaces\DriverInterface;
 use BotMan\BotMan\Interfaces\VerifiesService;
-use BotMan\BotMan\Messages\Incoming\Answer;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use BotMan\BotMan\Users\User;
 use Symfony\Component\HttpFoundation\Request;
+use BotMan\BotMan\Drivers\Events\GenericEvent;
 use Symfony\Component\HttpFoundation\Response;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 
 /**
  * A fake driver for tests. Must be used with ProxyDriver.
@@ -157,7 +157,7 @@ class FakeDriver implements DriverInterface, VerifiesService
         $this->botMessages[] = $payload;
         $text = method_exists($payload, 'getText') ? $payload->getText() : '';
 
-        return new Response(json_encode($text));
+        return Response::create(json_encode($text));
     }
 
     public function setName($name)
@@ -173,18 +173,6 @@ class FakeDriver implements DriverInterface, VerifiesService
     public function types(IncomingMessage $matchingMessage)
     {
         $this->botIsTyping = true;
-    }
-
-    /**
-     * Send a typing indicator and wait for the given amount of seconds.
-     * @param IncomingMessage $matchingMessage
-     * @param float $seconds
-     * @return mixed
-     */
-    public function typesAndWaits(IncomingMessage $matchingMessage, float $seconds)
-    {
-        $this->types($matchingMessage);
-        usleep($seconds * 1000000);
     }
 
     /**
@@ -214,7 +202,7 @@ class FakeDriver implements DriverInterface, VerifiesService
     }
 
     /**
-     * @return bool|GenericEvent
+     * @return bool
      */
     public function hasMatchingEvent()
     {

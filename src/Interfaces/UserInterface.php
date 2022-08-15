@@ -10,17 +10,17 @@ interface UserInterface
     public function getId();
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getUsername();
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFirstName();
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getLastName();
 

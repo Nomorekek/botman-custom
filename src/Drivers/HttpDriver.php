@@ -2,11 +2,11 @@
 
 namespace BotMan\BotMan\Drivers;
 
-use BotMan\BotMan\Interfaces\DriverInterface;
-use BotMan\BotMan\Interfaces\HttpInterface;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use Illuminate\Support\Collection;
+use BotMan\BotMan\Interfaces\HttpInterface;
+use BotMan\BotMan\Interfaces\DriverInterface;
 use Symfony\Component\HttpFoundation\Request;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 
 abstract class HttpDriver implements DriverInterface
 {
@@ -76,18 +76,6 @@ abstract class HttpDriver implements DriverInterface
     public function types(IncomingMessage $matchingMessage)
     {
         // Do nothing
-    }
-
-    /**
-     * Send a typing indicator and wait for the given amount of seconds.
-     * @param IncomingMessage $matchingMessage
-     * @param float $seconds
-     * @return mixed
-     */
-    public function typesAndWaits(IncomingMessage $matchingMessage, float $seconds)
-    {
-        $this->types($matchingMessage);
-        usleep($seconds * 1000000);
     }
 
     /**

@@ -3,8 +3,8 @@
 namespace BotMan\BotMan\Handlers;
 
 use BotMan\BotMan\BotMan;
-use BotMan\BotMan\Interfaces\ExceptionHandlerInterface;
 use Illuminate\Support\Collection;
+use BotMan\BotMan\Interfaces\ExceptionHandlerInterface;
 
 class ExceptionHandler implements ExceptionHandlerInterface
 {

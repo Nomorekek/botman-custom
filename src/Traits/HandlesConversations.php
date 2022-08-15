@@ -2,14 +2,14 @@
 
 namespace BotMan\BotMan\Traits;
 
-use BotMan\BotMan\Drivers\DriverManager;
-use BotMan\BotMan\Interfaces\ShouldQueue;
-use BotMan\BotMan\Messages\Conversations\Conversation;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use BotMan\BotMan\Messages\Outgoing\Question;
 use Closure;
 use Illuminate\Support\Collection;
 use Opis\Closure\SerializableClosure;
+use BotMan\BotMan\Drivers\DriverManager;
+use BotMan\BotMan\Interfaces\ShouldQueue;
+use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
+use BotMan\BotMan\Messages\Conversations\Conversation;
 
 trait HandlesConversations
 {
@@ -20,8 +20,8 @@ trait HandlesConversations
      */
     public function startConversation(Conversation $instance, $recipient = null, $driver = null)
     {
-        if (!is_null($recipient) && !is_null($driver)) {
-            $this->message = new IncomingMessage('', $recipient, '', null, $this->config['bot_id']);
+        if (! is_null($recipient) && ! is_null($driver)) {
+            $this->message = new IncomingMessage('', $recipient, '');
             $this->driver = DriverManager::loadFromName($driver, $this->config);
         }
         $instance->setBot($this);
@@ -74,7 +74,7 @@ trait HandlesConversations
      */
     public function touchCurrentConversation()
     {
-        if (!is_null($this->currentConversationData)) {
+        if (! is_null($this->currentConversationData)) {
             $touched = $this->currentConversationData;
             $touched['time'] = microtime();
 
@@ -107,11 +107,7 @@ trait HandlesConversations
          * Only remove it from the cache if it was not modified
          * after we loaded the data from the cache.
          */
-
-        $conversation = $this->getStoredConversation($message);
-
-        // See https://github.com/botman/botman/issues/1305
-        if (isset($conversation['time']) && ($conversation['time'] == $this->currentConversationData['time'])) {
+        if ($this->getStoredConversation($message)['time'] == $this->currentConversationData['time']) {
             $this->cache->pull($this->message->getConversationIdentifier());
             $this->cache->pull($this->message->getOriginatedConversationIdentifier());
         }
@@ -123,7 +119,7 @@ trait HandlesConversations
      */
     public function serializeClosure(Closure $closure)
     {
-        if ($this->getDriver()->serializesCallbacks() && !$this->runsOnSocket) {
+        if ($this->getDriver()->serializesCallbacks() && ! $this->runsOnSocket) {
             return serialize(new SerializableClosure($closure, true));
         }
 
@@ -136,7 +132,7 @@ trait HandlesConversations
      */
     protected function unserializeClosure($closure)
     {
-        if ($this->getDriver()->serializesCallbacks() && !$this->runsOnSocket) {
+        if ($this->getDriver()->serializesCallbacks() && ! $this->runsOnSocket) {
             return unserialize($closure);
         }
 
@@ -211,7 +207,6 @@ trait HandlesConversations
             $next = false;
             $parameters = [];
             if (is_array($convo['next'])) {
-                $toRepeat = false;
                 foreach ($convo['next'] as $callback) {
                     if ($this->matcher->isPatternValid($message, $this->getConversationAnswer(), $callback['pattern'])) {
                         $parameterNames = $this->compileParameterNames($callback['pattern']);
@@ -227,13 +222,6 @@ trait HandlesConversations
                         break;
                     }
                 }
-
-                if ($next == false) {
-                    //no pattern match
-                    //answer probably unexpected (some plain text)
-                    //let's repeat question
-                    $toRepeat = true;
-                }
             } else {
                 $next = $this->unserializeClosure($convo['next']);
             }
@@ -243,11 +231,6 @@ trait HandlesConversations
 
             if (is_callable($next)) {
                 $this->callConversation($next, $convo, $message, $parameters);
-            } elseif ($toRepeat) {
-                $conversation = $convo['conversation'];
-                $conversation->setBot($this);
-                $conversation->repeat();
-                $this->loadedConversation = true;
             }
         });
     }
@@ -262,7 +245,7 @@ trait HandlesConversations
     {
         /** @var \BotMan\BotMan\Messages\Conversations\Conversation $conversation */
         $conversation = $convo['conversation'];
-        if (!$conversation instanceof ShouldQueue) {
+        if (! $conversation instanceof ShouldQueue) {
             $conversation->setBot($this);
         }
         /*
@@ -307,16 +290,6 @@ trait HandlesConversations
         }
 
         $parameters[] = $conversation;
-
         call_user_func_array($next, $parameters);
-
-        /*
-        // TODO: Needs more work
-        if (class_exists('Illuminate\\Support\\Facades\\App')) {
-            \Illuminate\Support\Facades\App::call($next, $parameters);
-        } else {
-            call_user_func_array($next, $parameters);
-        }
-        // */
     }
 }

@@ -2,10 +2,10 @@
 
 namespace BotMan\BotMan\Drivers;
 
-use BotMan\BotMan\Messages\Incoming\Answer;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Users\User;
+use BotMan\BotMan\Messages\Incoming\Answer;
 use Symfony\Component\HttpFoundation\Request;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 
 class NullDriver extends HttpDriver
 {
@@ -49,7 +49,7 @@ class NullDriver extends HttpDriver
     /**
      * Retrieve the chat message.
      *
-     * @return array
+     * @return string
      */
     public function getMessages()
     {
