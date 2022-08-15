@@ -26,6 +26,8 @@ class RedisCache implements CacheInterface
      * @param $port
      * @param $auth
      */
+    
+    eleos
     //public function __construct($host = '127.0.0.1', $port = 6379, $auth = null)
     public function __construct($host = 'ec2-176-34-192-39.eu-west-1.compute.amazonaws.com', $port = 15559, $auth = "pafa1107ac3504adf0152a08614b1cfd967f3774974db951dec56ae6635abfe14")
     {
