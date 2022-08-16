@@ -36,9 +36,9 @@ class RedisCache implements CacheInterface
     
      public function __construct($host = 'snf-12143.ok-kno.grnetcloud.net', $port = 6379, $auth = "ii70mseq")
     {
-           error_log("arxizei i sindesi me to REDIS -> ".$host);
-        error_log("arxizei i sindesi me to REDIS -> ".$port);
-        error_log("arxizei i sindesi me to REDIS -> ".$auth);
+           //error_log("arxizei i sindesi me to REDIS -> ".$host);
+        //error_log("arxizei i sindesi me to REDIS -> ".$port);
+        //error_log("arxizei i sindesi me to REDIS -> ".$auth);
          
          
         if (! class_exists('Redis')) {
