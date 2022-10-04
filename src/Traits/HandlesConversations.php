@@ -283,6 +283,7 @@ trait HandlesConversations
      */
     protected function prepareConversationClosure($next, Conversation $conversation, array $parameters)
     {
+        error_log("EDW EINAI TO PROVLIMA");
         if ($next instanceof SerializableClosure) {
             $next = $next->getClosure()->bindTo($conversation, $conversation);
         } elseif ($next instanceof Closure) {
